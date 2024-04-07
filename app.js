@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  function addZero(params) {}
+  function addZero(number) {}
 
   function setClock(endTime) {
     const timer = document.querySelector(".timer"),
