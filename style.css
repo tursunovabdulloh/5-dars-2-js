@@ -1,0 +1,13 @@
+.btn1 {
+  margin-left: 680px;
+  padding: 12px 24px;
+  background-color: aquamarine;
+  border: 0;
+}
+.btn1:hover {
+  background-color: aliceblue;
+  color: black;
+}
+.title {
+  text-align: center;
+}
