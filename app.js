@@ -1,59 +1,56 @@
-// let title = document.querySelector("#title");
+class App {
+  timer = {
+    min_tens: document.getElementById("min_tens"),
+    min: document.getElementById("min"),
+    sec_tens: document.getElementById("sec_tens"),
+    sec: document.getElementById("sec"),
+  };
+  #interval;
 
-// let minute = 0;
-// let seconds = 0;
-// let hours = 0;
-
-// const interval = setInterval(() => {
-//   seconds += 1;
-//   title.textConten = `${minute < 10 ? `0${minute}` : minute} : ${
-//     seconds < 10 ? `0${seconds}` : seconds
-//   }`;
-//   if (seconds == 59) {
-//     seconds = 0;
-//     minute += 1;
-//   }
-// }, 1000);
-
-"use strict";
-
-document.addEventListener("DOMContentLoaded", () => {
-  const deadline = "2020-09-05";
-
-  function getRemainingTime(endTime) {
-    const total = Date.parse(endTime) - new Date();
-    days = Math.floor(total / 1000 / 60 / 60 / 24);
-    hours = Math.floor((total / 1000 / 60 / 60) % 24);
-    minutes = Math.floor((total / 1000 / 60) % 60);
-    seconds = Math.floor((total / 1000) % 60);
-
-    return {
-      total: total,
-      days: days,
-      hours: hours,
-      minutes: minutes,
-      seconds: seconds,
-    };
+  submit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const time = formData.get("time");
+    this.#clearTimer();
+    this.#startTimer(time);
   }
 
-  function addZero(number) {}
-
-  function setClock(endTime) {
-    const timer = document.querySelector(".timer"),
-      days = timer.querySelector("#days"),
-      hours = timer.querySelector("#hours"),
-      minutes = timer.querySelector("#minutes"),
-      seconds = timer.querySelector("#seconds");
-    updateClock();
-
-    setInterval(updateClock, 1000);
-    function updateClock() {
-      const total = getRemainingTime(endTime);
-      days.innerHTML = total.days;
-      hours.innerHTML = total.hours;
-      minutes.innerHTML = total.minutes;
-      seconds.innerHTML = total.seconds;
+  #clearTimer() {
+    if (this.#interval) {
+      clearInterval(this.#interval);
     }
+    this.#setTimer({
+      min_tens: 0,
+      min: 0,
+      sec_tens: 0,
+      sec: 0,
+    });
   }
-  setClock(deadline);
-});
+
+  #startTimer(time) {
+    const end = Date.now() + time * 1000 * 60;
+    this.#interval = setInterval(() => {
+      const now = Date.now();
+      const delta = end - now;
+      if (delta < 0) {
+        clearInterval(this.#interval);
+        return;
+      }
+      this.#setTimer({
+        min_tens: Math.floor(delta / 1000 / 60 / 10),
+        min: Math.floor((delta / 1000 / 60) % 10),
+        sec_tens: Math.floor((delta % 60000) / 10000),
+        sec: Math.floor(((delta % 60000) / 1000) % 10),
+      });
+    }, 500);
+  }
+
+  #setTimer({ min_tens, min, sec_tens, sec }) {
+    this.timer.min_tens.innerText = min_tens;
+    this.timer.min.innerText = min;
+    this.timer.sec_tens.innerText = sec_tens;
+    this.timer.sec.innerText = sec;
+  }
+}
+
+const app = new App();
